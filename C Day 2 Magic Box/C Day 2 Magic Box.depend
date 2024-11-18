@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1731963647 source:d:\c programming course\labs\c day 2 magic box\main.c
+	<stdio.h>
+	<stdlib.h>
+	"conio.h"
+	<windows.h>
+

@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1731960930 source:d:\c programming course\labs\c day 3 task 1 colored menu\main.c
+	<windows.h>
+	<io.h>
+	<unistd.h>
+	<stdlib.h>
+	<stdio.h>
+
