@@ -37,7 +37,7 @@ int main()
     // Input array elements
     for (int i = 0; i < SIZE; i++)
     {
-        printf("Enter element %d: ", i + 1);
+        printf("Enter element: " );
         scanf("%d", &arr[i]);
     }
 

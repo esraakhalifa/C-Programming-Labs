@@ -41,8 +41,8 @@ void gotoxy(int x, int y)
 }
 // set output color on the given stream:
 void setTextColor(FILE *stream, TextColor color);
-void moveArrows(char, int*, int);
-void makeChoice(int*, int);
+int moveArrows(char, int, int);
+int makeChoice(int, int);
 void renderMenu(int, int);
 int main(void)
 {
@@ -56,12 +56,13 @@ int main(void)
         if (click == -32)
         {
             click = getch();
-            moveArrows(click, &row, col);
+
+            row = moveArrows(click, row, col);
 
         }
         else if (click == 13)
         {
-            makeChoice(&row, col);
+            row = makeChoice(row, col);
         }
 
     }
@@ -84,16 +85,16 @@ void renderMenu(int row, int col)
     puts("Exit");
     row = 2;
 }
-void makeChoice(int *row, int col)
+int makeChoice(int row, int col)
 {
                 system("cls");
                 setTextColor(stdout, TC_WHITE);
                 gotoxy(col, 4);
-                if (*row == 2)
+                if (row == 2)
                 {
                     puts("New");
                 }
-                else if(*row == 4)
+                else if(row == 4)
                 {
                     puts("Display");
                 }
@@ -109,23 +110,23 @@ void makeChoice(int *row, int col)
                 }
 
 }
-void moveArrows(char click, int *row, int col)
+int moveArrows(char click, int row, int col)
 {
             if (click == 72) // up
             {
-                if(*row == 2) *row =6;
-                else *row -=2;
+                if(row == 2) row =6;
+                else row -=2;
 
             }
             else if ( click == 80) // down
             {
-                if(*row == 6) *row =2;
-                else *row += 2;
+                if(row == 6) row =2;
+                else row += 2;
             }
 
-            gotoxy(col,*row);
+            gotoxy(col,row);
             setTextColor(stdout, TC_BLUE);
-            if (*row == 2){
+            if (row == 2){
 
                 puts("New");
                 setTextColor(stdout, TC_WHITE);
@@ -136,7 +137,7 @@ void moveArrows(char click, int *row, int col)
                 gotoxy(col, 6);
                 puts("Exit");
             }
-            else if ( *row == 4){
+            else if ( row == 4){
                 puts("Display");
                 setTextColor(stdout, TC_WHITE);
                 gotoxy(col, 0);
@@ -157,6 +158,7 @@ void moveArrows(char click, int *row, int col)
                     puts("Display");
 
                 }
+                return row;
 }
 
 #ifdef _WIN32

@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1732021529 source:d:\c programming course\labs\c day 3 max and min task\main.c
+	<stdio.h>
+	<stdlib.h>
+
