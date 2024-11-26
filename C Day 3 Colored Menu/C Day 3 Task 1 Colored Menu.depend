@@ -6,7 +6,12 @@
 	<stdlib.h>
 	<stdio.h>
 
-1732014087 source:d:\c programming course\labs\c day 3 colored menu\main.c
+1732453985 source:d:\c programming course\labs\c day 3 colored menu\main.c
+	<windows.h>
+	<io.h>
+	<unistd.h>
+	<stdlib.h>
+	<stdio.h>
 	<windows.h>
 	<io.h>
 	<unistd.h>

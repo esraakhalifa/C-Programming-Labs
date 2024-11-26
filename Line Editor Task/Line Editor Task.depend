@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1732588831 source:d:\c programming course\labs\line editor task\main.c
+	<stdio.h>
+	<windows.h>
+	<conio.h>
+
