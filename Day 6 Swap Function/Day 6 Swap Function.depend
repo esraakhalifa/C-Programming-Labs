@@ -1,5 +1,8 @@
 # depslib dependency file v1.0
-1732367562 source:d:\c programming course\labs\day 6 swap function\main.c
+1732609942 source:d:\c programming course\labs\day 6 swap function\main.c
 	<stdio.h>
 	<stdlib.h>
+	"D:\C Programming Course\Labs\String Functions\String.h"
+
+1732609770 d:\c programming course\labs\string functions\string.h
 
