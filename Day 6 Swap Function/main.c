@@ -101,7 +101,7 @@ int isInt(char arr[],int length)
     if (arr[0] == '-' && length == 1) return 0;
     for (int i = 0; arr[i] != '\0'; i++)
     {
-        int intArr = (int)arr[i];
+        int intArr = (int)arr[i]; //typecasting before looping over the string, to get the ascii
         if ( (intArr == 45 && i != 0) || (intArr < 48 || intArr > 57) )
         {
             return 0;

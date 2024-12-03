@@ -310,6 +310,7 @@ void setTextColor(FILE *stream, TextColor color)
 #endif
 
 #include <stdlib.h>
+
 #include <stdio.h>
 #define SIZE 100
 
@@ -336,9 +337,9 @@ typedef enum TextColor
 
 typedef struct Employee
 {
-    int ID;
-    float Age;
-    float salary;
+    char ID[5];
+    char Age[10];
+    char salary[10];
     char Name[20];
 }Employee;
 
@@ -349,149 +350,336 @@ void gotoxy(int x, int y)
     coord.Y = y ;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-// set output color on the given stream:
-void setTextColor(FILE *stream, TextColor color);
-int moveArrows(char, int, int);
-int makeChoice(int, int);
-void renderMenu(int, int);
-int main(void)
+int isInt(char arr[],int length)
 {
-    int flag = 1, row = 2, col = 6,numOfEmployees = 0;
-    Employee employees[SIZE];
-    renderMenu(row,col);
-    while(flag == 1){
-        char click = 0;
-        click = getch();
-        //printf("%d\n", click);
 
-        if (click == -32)
+    if (arr[0] == '-' && length == 1) return 0;
+    for (int i = 0; arr[i] != '\0'; i++)
+    {
+        int intArr = (int)arr[i];
+        if ( (intArr == 45 && i != 0) || (intArr < 48 || intArr > 57) )
         {
-            click = getch();
-
-            row = moveArrows(click, row, col);
+            return 0;
 
         }
-        else if (click == 13)
-        {
-            row = makeChoice(row, col);
-        }
+    }
+    return 1;
 
+}
+int myStrlen(char str[])
+{
+    int i = 1;
+    while(str[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
+int isValidName(char arr[])
+{
+    if (myStrlen(arr) == 0)
+    {
+        return 0;
     }
 
+    for (int i = 0; i != '\0'; i++)
+    {
+        int intArr = (int)arr[i];
 
-    return EXIT_SUCCESS;
+
+        if (!(intArr == 32 || (intArr >= 65 && intArr <= 90) || (intArr >= 97 && intArr <= 122)))
+        {
+            return 0;
+        }
+    }
+
+    return 1;
 }
+
+
+//converting string input to integer ==>
+
+int strtoI(char arr[])
+{
+    int digitNum = 0;int sign = 1;
+    if (arr[0] == '-') sign = -1;
+    for (int i = (sign == -1 ? 1 : 0); arr[i] != '\0'; i++)
+    {
+        digitNum = digitNum * 10 + (arr[i] - 48);
+    }
+    digitNum *= sign;
+    return digitNum;
+}
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {
+
+    }
+}
+// set output color on the given stream:
+int moveArrows(char , int , int );
+void renderMenu(int , int );
+
+int main(void)
+{
+    int flag = 1, row = 4, col = 55,numOfEmployees = 0;
+    renderMenu(4,55);
+    Employee employees[SIZE];
+while (1) {
+    char click = getch();
+    if (click == -32) {
+        click = getch();
+        row = moveArrows(click, row, col);
+    }
+
+    if (row == 4 && click == 13) {
+        system("cls");
+        char addEmployeeFlag = 'y';
+
+
+        while (addEmployeeFlag == 'y' && numOfEmployees < SIZE) {
+            system("cls");
+            setTextColor(stdout, TC_WHITE);
+
+            printf("Enter ID: ");
+            scanf("%s", &employees[numOfEmployees].ID);
+            while (isInt(&employees[numOfEmployees].ID, myStrlen(&employees[numOfEmployees].ID)) == 0)
+            {
+                printf("Invalid ID.\n");
+                printf("Enter new ID: ");
+                scanf("%s", &employees[numOfEmployees].ID);
+                clearInputBuffer();
+            }
+
+            printf("Enter Name: ");
+            scanf("%s", employees[numOfEmployees].Name);
+            while (isValidName(&employees[numOfEmployees].Name) == 0)
+            {
+                printf("Invalid name.\n");
+                printf("Enter new name: ");
+                scanf("%s", &employees[numOfEmployees].Name);
+                clearInputBuffer();
+            }
+
+            printf("Enter Age: ");
+            scanf("%s", &employees[numOfEmployees].Age);
+            //clearInputBuffer();
+
+            while (isInt(&employees[numOfEmployees].Age, myStrlen(&employees[numOfEmployees].Age)) == 0)
+            {
+                printf("Invalid age.\n");
+                printf("Enter new age: ");
+                scanf("%s", &employees[numOfEmployees].Age);
+                clearInputBuffer();
+            }
+
+            printf("Enter Salary: ");
+            scanf("%s", &employees[numOfEmployees].salary);
+            //clearInputBuffer();
+            while (isInt(&employees[numOfEmployees].salary, myStrlen(&employees[numOfEmployees].salary)) == 0)
+            {
+                printf("Invalid salary.\n");
+                printf("Enter new salary: ");
+                scanf("%s", &employees[numOfEmployees].salary);
+                clearInputBuffer();
+            }
+
+            numOfEmployees++;
+
+            printf("Do you want to add another employee? [y/n]: ");
+            getchar();
+            scanf("%c", &addEmployeeFlag);
+        }
+        renderMenu(4, 55);
+    }
+    else if (row == 20 && click == 13)
+    {
+        system("cls");
+        setTextColor(stdout, TC_WHITE);
+        char modifyEmployeeFlag = 'y';
+        while (modifyEmployeeFlag == 'y') {
+        int id;
+        int found = 0;
+
+        printf("\nEnter ID of the employee to modify: ");
+        scanf("%d", &id);
+
+
+        for (int j = 0; j < numOfEmployees; j++) {
+            if (employees[j].ID == id) {
+                found = 1;
+
+                printf("Do you want to modify the name, age, or salary? ");
+                char modification[10];
+                scanf("%s", modification);
+
+                if (strcmp(modification, "name") == 0 || strcmp(modification, "Name") == 0) {
+                    printf("Enter new Name: ");
+                    scanf("%s", employees[j].Name);
+                } else if (strcmp(modification, "age") == 0 || strcmp(modification, "Age") == 0) {
+                    printf("Enter new Age: ");
+                    scanf("%d", &employees[j].Age);
+
+                } else if (strcmp(modification, "salary") == 0 || strcmp(modification, "Salary") == 0) {
+                    printf("Enter new Salary: ");
+                    scanf("%d", &employees[j].salary);
+                } else {
+                    printf("Invalid field to modify.\n");
+                }
+            }
+        }
+
+
+
+        if (!found) {
+            printf("Employee with ID %d not found.\n", id);
+        }
+
+        printf("\nDo you want to modify the data of another employee? [y/n]: ");
+        getchar();
+        scanf("%c", &modifyEmployeeFlag);
+    }
+    renderMenu(4, 55);
+    }
+    else if (row == 12 && click == 13)
+    {
+        char displayEmployeesFlag = 'n';
+        system("cls");
+        setTextColor(stdout, TC_WHITE);
+        if (numOfEmployees == 0) printf("No employees added.\n");
+        else
+        {
+            for (int i = 0; i < numOfEmployees; i++)
+            {
+
+                printf("%s. %s, %s years old, earns %s\n",employees[i].ID,
+                        employees[i].Name, employees[i].Age, employees[i].salary);
+            }
+
+        }
+        printf("Want to go back to the main menu?");
+        getchar();
+        scanf("%c", &displayEmployeesFlag);
+        if (displayEmployeesFlag == 'y')renderMenu(4, 55);
+
+
+
+    }
+}
+return EXIT_SUCCESS;
+
+
+}
+
+
+
 void renderMenu(int row, int col)
 {
+    system("cls");
+    Employee employees[SIZE];
+    setTextColor(stdout, TC_WHITE);
     gotoxy(col, 0);
-    puts("Line: 1");
+    printf("Line: 1");
     gotoxy(col, row);
     setTextColor(stdout, TC_BLUE);
-    //puts("New");
     printf("New");
     setTextColor(stdout, TC_WHITE);
-    gotoxy(col,row + 2);
-    puts("Display");
-    gotoxy(col, row + 4);
-    puts("Exit");
-    row = 2;
+    row += 8;
+    gotoxy(col,row);
+    printf("Display");
+    row += 8;
+    gotoxy(col, row);
+    printf("Modify");
+    row += 8;
+    gotoxy(col, row);
+    printf("Exit");
+    row = 4;
+    gotoxy(col, row);
 }
-int makeChoice(int row, int col)
-{
-                system("cls");
-                setTextColor(stdout, TC_WHITE);
-                gotoxy(col, 4);
-                if (row == 2)
-                {
-                    puts("New");
-                }
-                else if(row == 4)
-                {
-                    puts("Display");
-                }
-                else {
-                        puts("Exit");
-                }
-                char click = getch();
-                if (click == 27)
-                {
-                    //moveArrows(click, 2,6);
-                    system("cls");
-                    renderMenu(2,6);
-                }
-
-}
-
 int moveArrows(char click, int row, int col)
 {
             if (click == 72) // up
             {
-                if(row == 2) row =6;
-                else row -=2;
+                if(row == 4) row =28;
+                else row -=8;
 
             }
             else if ( click == 80) // down
             {
-                if(row == 6) row =2;
-                else row += 2;
+                if(row == 28) row =4;
+                else row += 8;
             }
+            setTextColor(stdout, TC_WHITE);
+            if (row == 4){
 
-            gotoxy(col,row);
-            setTextColor(stdout, TC_BLUE);
-            if (row == 2){
 
-                puts("New");
-                setTextColor(stdout, TC_WHITE);
                 gotoxy(col, 0);
                 puts("Line: 1");
-                gotoxy(col,4);
+                gotoxy(col,12);
                 puts("Display");
-                gotoxy(col, 6);
+                gotoxy(col,20);
+                puts("Modify");
+                gotoxy(col, 28);
                 puts("Exit");
+                gotoxy(col,row);
+                setTextColor(stdout, TC_BLUE);
+                puts("New");
             }
-            else if ( row == 4){
-                puts("Display");
-                setTextColor(stdout, TC_WHITE);
+            else if ( row == 12){
+
+
                 gotoxy(col, 0);
                 puts("Line: 2");
-                gotoxy(col,2 );
+                gotoxy(col,4 );
                 puts("New");
-                gotoxy(col, 6);
+                gotoxy(col,20);
+                puts("Modify");
+                gotoxy(col, 28);
                 puts("Exit");
+                gotoxy(col,row);
+                setTextColor(stdout, TC_BLUE);
+                puts("Display");
             }
-            else {
-                    puts("Exit");
-                    setTextColor(stdout, TC_WHITE);
+            else if (row == 20){
+
+
                     gotoxy(col, 0);
                     puts("Line: 3");
-                    gotoxy(col, 2);
-                    puts("New");
                     gotoxy(col, 4);
+                    puts("New");
+                    gotoxy(col, 12);
                     puts("Display");
+                    gotoxy(col, 28);
+                    puts("Exit");
+                    gotoxy(col,row);
+                    setTextColor(stdout, TC_BLUE);
+                    puts("Modify");
+
+                }
+            else {
+
+                    setTextColor(stdout, TC_WHITE);
+                    gotoxy(col, 0);
+                    puts("Line: 4");
+                    gotoxy(col, 4);
+                    puts("New");
+                    gotoxy(col, 12);
+                    puts("Display");
+                    gotoxy(col, 20);
+                    puts("Modify");
+                    gotoxy(col,row);
+                    setTextColor(stdout, TC_BLUE);
+                    puts("Exit");
 
                 }
                 return row;
 }
-void addEmployee(Employee employees[],int *numOfEmployees)
-{
-        Employee e1;
-        system("cls");
-        setTextColor(stdout, TC_WHITE);
-        gotoxy(50,4);
-        printf("Enter employee id: ");
-        scanf("%d", &e1.ID);
-        gotoxy(50,12);
-        printf("Enter employee name: ");
-        scanf("%s", &e1.Name);
-        gotoxy(50,20);
-        printf("Enter employee age: ");
-        scanf("%.2f", & e1.Age);
-        gotoxy(50,28);
-        printf("Enter employee salary: ");
-        scanf("%.2f", & e1.salary);
-        employees[*numOfEmployees] = e1;
-        numOfEmployees++;
-}
+
+
+
+
+
+
 
 #ifdef _WIN32
 
