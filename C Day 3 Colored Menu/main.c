@@ -382,7 +382,7 @@ int isValidName(char arr[])
         return 0;
     }
 
-    for (int i = 0; i != '\0'; i++)
+    for (int i = 0; arr[i] != '\0'; i++)
     {
         int intArr = (int)arr[i];
 
@@ -442,45 +442,45 @@ while (1) {
             setTextColor(stdout, TC_WHITE);
 
             printf("Enter ID: ");
-            scanf("%s", &employees[numOfEmployees].ID);
+            scanf("%[^\n]", &employees[numOfEmployees].ID);
             while (isInt(&employees[numOfEmployees].ID, myStrlen(&employees[numOfEmployees].ID)) == 0)
             {
                 printf("Invalid ID.\n");
                 printf("Enter new ID: ");
-                scanf("%s", &employees[numOfEmployees].ID);
+                scanf("%[^\n]", &employees[numOfEmployees].ID);
                 clearInputBuffer();
             }
 
             printf("Enter Name: ");
-            scanf("%s", employees[numOfEmployees].Name);
+            scanf("%[^\n]", employees[numOfEmployees].Name);
             while (isValidName(&employees[numOfEmployees].Name) == 0)
             {
                 printf("Invalid name.\n");
                 printf("Enter new name: ");
-                scanf("%s", &employees[numOfEmployees].Name);
+                scanf("%[^\n]", &employees[numOfEmployees].Name);
                 clearInputBuffer();
             }
 
             printf("Enter Age: ");
-            scanf("%s", &employees[numOfEmployees].Age);
-            //clearInputBuffer();
+            scanf("%[^\n]", &employees[numOfEmployees].Age);
+            clearInputBuffer();
 
             while (isInt(&employees[numOfEmployees].Age, myStrlen(&employees[numOfEmployees].Age)) == 0)
             {
                 printf("Invalid age.\n");
                 printf("Enter new age: ");
-                scanf("%s", &employees[numOfEmployees].Age);
+                scanf("%[^\n]", &employees[numOfEmployees].Age);
                 clearInputBuffer();
             }
 
             printf("Enter Salary: ");
-            scanf("%s", &employees[numOfEmployees].salary);
-            //clearInputBuffer();
+            scanf("%[^\n]", &employees[numOfEmployees].salary);
+            clearInputBuffer();
             while (isInt(&employees[numOfEmployees].salary, myStrlen(&employees[numOfEmployees].salary)) == 0)
             {
                 printf("Invalid salary.\n");
                 printf("Enter new salary: ");
-                scanf("%s", &employees[numOfEmployees].salary);
+                scanf("%[^\n]", &employees[numOfEmployees].salary);
                 clearInputBuffer();
             }
 
@@ -515,14 +515,35 @@ while (1) {
 
                 if (strcmp(modification, "name") == 0 || strcmp(modification, "Name") == 0) {
                     printf("Enter new Name: ");
-                    scanf("%s", employees[j].Name);
+                    scanf("%[^\n]", employees[j].Name);
+                    while (isValidName(&employees[numOfEmployees].Name) == 0)
+                    {
+                        printf("Invalid name.\n");
+                        printf("Enter new name: ");
+                        scanf("%[^\n]", &employees[numOfEmployees].Name);
+                        clearInputBuffer();
+                    }
                 } else if (strcmp(modification, "age") == 0 || strcmp(modification, "Age") == 0) {
                     printf("Enter new Age: ");
-                    scanf("%d", &employees[j].Age);
+                    scanf("%[^\n]", &employees[j].Age);
+                    while (isInt(&employees[numOfEmployees].Age, myStrlen(&employees[numOfEmployees].Age)) == 0)
+                    {
+                        printf("Invalid age.\n");
+                        printf("Enter new age: ");
+                        scanf("%[^\n]", &employees[numOfEmployees].Age);
+                        clearInputBuffer();
+                    }
 
                 } else if (strcmp(modification, "salary") == 0 || strcmp(modification, "Salary") == 0) {
                     printf("Enter new Salary: ");
-                    scanf("%d", &employees[j].salary);
+                    scanf("%[^\n]", &employees[j].salary);
+                    while (isInt(&employees[numOfEmployees].salary, myStrlen(&employees[numOfEmployees].salary)) == 0)
+                    {
+                        printf("Invalid salary.\n");
+                        printf("Enter new salary: ");
+                        scanf("%[^\n]", &employees[numOfEmployees].salary);
+                        clearInputBuffer();
+                    }
                 } else {
                     printf("Invalid field to modify.\n");
                 }
