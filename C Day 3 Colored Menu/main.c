@@ -216,7 +216,7 @@ while (1) {
                 if (numOfEmployees == 0) {
                     char choice;
                     printf("There are no employees to modify.\n");
-                    printf("Do you want to go back to the main menu or exit? 1. Main menu  2. Exit");
+                    printf("Do you want to go back to the main menu or exit? 1. Main menu  2. Exit\n");
                     getchar();
                     scanf("%c", &choice);
                     if (choice == '1') {
@@ -237,7 +237,7 @@ while (1) {
                     if (strcmp(employees[j].ID, id) == 0) {
                         found = 1;
                         employeeNumber = j;
-                        printf("Employee with ID %s is found.\n", id);
+                        //printf("Employee with ID %s is found.\n", id);
                         break;
                     }
                 }
@@ -245,7 +245,7 @@ while (1) {
                 if (found) {
                     printf("Do you want to modify the name, age, or salary? ");
                     char modification[10];
-                    scanf("%s", modification);
+                    scanf(" %99[^\n]", modification);
 
                     if (strcmp(modification, "name") == 0 || strcmp(modification, "Name") == 0) {
                         printf("Enter new Name: ");
@@ -254,22 +254,25 @@ while (1) {
                             printf("Invalid name.\n");
                             printf("Enter new name: ");
                             scanf(" %99[^\n]", employees[employeeNumber].Name);
+                            clearInputBuffer();
                         }
                     } else if (strcmp(modification, "age") == 0 || strcmp(modification, "Age") == 0) {
                         printf("Enter new Age: ");
-                        scanf(" %d", &employees[employeeNumber].Age);
+                        scanf(" %99[^\n]", &employees[employeeNumber].Age);
                         while (isInt(employees[employeeNumber].Age, myStrlen(employees[employeeNumber].Age)) == 0) {
                             printf("Invalid age.\n");
                             printf("Enter new age: ");
-                            scanf(" %d", &employees[employeeNumber].Age);
+                            scanf(" %99[^\n]", &employees[employeeNumber].Age);
+                            clearInputBuffer();
                         }
                     } else if (strcmp(modification, "salary") == 0 || strcmp(modification, "Salary") == 0) {
                         printf("Enter new Salary: ");
-                        scanf(" %lf", &employees[employeeNumber].salary);
+                        scanf(" %99[^\n]", &employees[employeeNumber].salary);
                         while (isInt(employees[employeeNumber].salary,myStrlen(employees[employeeNumber].salary) ) == 0) {
                             printf("Invalid salary.\n");
                             printf("Enter new salary: ");
-                            scanf(" %lf", &employees[employeeNumber].salary);
+                            scanf(" %99[^\n]", &employees[employeeNumber].salary);
+                            clearInputBuffer();
                         }
                     } else {
                         printf("Invalid field to modify.\n");
@@ -332,7 +335,7 @@ while (1) {
             printf("Enter ID of the employee to delete: ");
             scanf(" %99[^\n]", id);
 
-            // Find the employee with the matching ID
+
             for (int j = 0; j < numOfEmployees; j++) {
                 if (strcmp(employees[j].ID, id) == 0) {
                     found = 1;
@@ -342,28 +345,28 @@ while (1) {
                 }
             }
 
-            // If the employee is found, delete them
+
             if (found) {
-                // Shift the employees array to remove the employee
+
                 for (int i = employeeNumber; i < numOfEmployees - 1; i++) {
-                    employees[i] = employees[i + 1];  // Shift elements left
+                    employees[i] = employees[i + 1];
                 }
 
-                // Clear the last employee slot
+
                 memset(&employees[numOfEmployees - 1], 0, sizeof(Employee));
-                numOfEmployees--;  // Decrease the number of employees
+                numOfEmployees--;
                 printf("Employee with ID %s has been deleted.\n", id);
             } else {
                 printf("Employee with ID %s not found.\n", id);
             }
 
-            // Ask if the user wants to delete another employee
+
             printf("\nDo you want to delete another employee? [y/n]: ");
-            getchar();  // Clear the input buffer
+            getchar();
             scanf("%c", &deleteEmployeeFlag);
         }
 
-        renderMenu(4, 55, 16);  // Go back to the menu after deletion
+        renderMenu(4, 55, 16);
     }
 
     else if ( row == 20 && click == 13)
