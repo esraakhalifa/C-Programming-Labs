@@ -1,303 +1,4 @@
-/*#ifdef _WIN32
-#include <windows.h>    // for win32 API functions
-#include <io.h>         // for _get_osfhandle()
-#else
-#ifndef _POSIX_SOURCE
-#define _POSIX_SOURCE   // enable POSIX extensions in standard library headers
-#endif
-#include <unistd.h>     // for isatty()
-#endif
 
-#include <stdlib.h>
-#include <stdio.h>
-#define SIZE 100
-
-// use an enum for platform-independent interface:
-typedef enum TextColor
-{
-    TC_BLACK = 0,
-    TC_BLUE = 1,
-    TC_GREEN = 2,
-    TC_CYAN = 3,
-    TC_RED = 4,
-    TC_MAGENTA = 5,
-    TC_BROWN = 6,
-    TC_LIGHTGRAY = 7,
-    TC_DARKGRAY = 8,
-    TC_LIGHTBLUE = 9,
-    TC_LIGHTGREEN = 10,
-    TC_LIGHTCYAN = 11,
-    TC_LIGHTRED = 12,
-    TC_LIGHTMAGENTA = 13,
-    TC_YELLOW = 14,
-    TC_WHITE = 15
-} TextColor;
-
-void gotoxy(int x, int y)
-{
-    COORD coord;
-    coord.X= x ;
-    coord.Y = y ;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-typedef struct Employee
-{
-    int ID;
-    float Age;
-    float salary;
-    char Name[20];
-};
-
-// set output color on the given stream:
-void setTextColor(FILE *stream, TextColor color);
-int moveArrows(char, int, int);
-int makeChoice(int, int);
-void renderMenu(int, int);
-void addEmployee(int*, Employee[]);
-int main(void)
-{
-    Employee employees[SIZE];
-    int mainFlag = 1, row = 4, col = 55, numOfEmployees = 0;
-    renderMenu(row,col);
-    while(mainFlag = 1)
-    {
-        char click = getch();
-        if (click == -32)
-        {
-
-            click = getch();
-            if (click == 72)
-            {
-
-                if (row == 4) row = 28;
-                else row-=8;
-            }
-            else if (click == 80)
-            {
-
-                if (row == 28) row = 4;
-                else row+=8;
-            }
-            renderMenu(row,col);
-        }
-
-        else if (click == 13 && row == 4)
-        {
-            addEmployee(&numOfEmployees, employees);
-            system("cls");
-            click = getch();
-            int option = 1;
-        if (click == -32) {
-            click = getch();
-
-            if (click == 75) {
-                system("cls");
-                setTextColor(stdout, TC_WHITE);
-                gotoxy(40, 12);
-                printf("Do you want to add another employee or exit?");
-                gotoxy(60, 20);
-                setTextColor(stdout, TC_WHITE);
-                printf("New");
-                gotoxy(40, 20);
-                setTextColor(stdout, TC_BLUE);
-                printf("Add another");
-                option = 1;
-            }
-            else if (click == 77) {
-                system("cls");
-                setTextColor(stdout, TC_WHITE);
-                gotoxy(40, 12);
-                printf("Do you want to add another employee or exit?");
-                gotoxy(40, 20);
-                printf("Add another");
-                gotoxy(60, 20);
-                setTextColor(stdout, TC_BLUE);
-                printf("Exit");
-                option = 2;
-            }
-        } else {
-            if (option == 1) {
-                addEmployee(&numOfEmployees, employees);
-            } else if (option == 2) {
-                renderMenu(55, 4);
-            }
-        }
-        }
-        else if (click == 13 && row == 12)
-        {
-            for (int j = 0; j <= numOfEmployees; j++ )
-            {
-                printf("%d. %s, %2f years old, earns %.2f EGP.", employees[j].ID,
-                        employees[j].Name, employees[j].Age, employees[j].salary);
-            }
-        }
-
-
-    }
-
-
-
-
-    return EXIT_SUCCESS;
-}
-void renderMenu(int row, int col)
-{
-    system("cls");
-    Employee employees[SIZE];
-    gotoxy(col, 1);
-    printf("Line: 1");
-    gotoxy(col, row);
-    setTextColor(stdout, TC_BLUE);
-    printf("New");
-    setTextColor(stdout, TC_WHITE);
-    row += 8;
-    gotoxy(col,row);
-    printf("Display");
-    row += 8;
-    gotoxy(col, row);
-    printf("Modify");
-    row += 8;
-    gotoxy(col, row);
-    printf("Exit");
-    row = 4;
-}
-void addEmployee(int *numOfEmployees, Employee employees[])
-{
-        Employee e1;
-        system("cls");
-        setTextColor(stdout, TC_WHITE);
-        gotoxy(50,4);
-        printf("Enter employee id: ");
-        scanf("%d", &e1.ID);
-        gotoxy(50,12);
-        printf("Enter employee name: ");
-        scanf("%s", &e1.Name);
-        gotoxy(50,20);
-        printf("Enter employee age: ");
-        scanf("%.2f", & e1.Age);
-        gotoxy(50,28);
-        printf("Enter employee salary: ");
-        scanf("%.2f", & e1.salary);
-        employees[*numOfEmployees] = e1;
-        numOfEmployees++;
-}
-int makeChoice(int row, int col)
-{
-                system("cls");
-                setTextColor(stdout, TC_WHITE);
-                gotoxy(col, 4);
-                if (row == 2)
-                {
-                    puts("New");
-                }
-                else if(row == 4)
-                {
-                    puts("Display");
-                }
-                else {
-                        puts("Exit");
-                }
-                char click = getch();
-                if (click == 27)
-                {
-                    //moveArrows(click, 2,6);
-                    system("cls");
-                    renderMenu(2,6);
-                }
-
-}
-
-
-#ifdef _WIN32
-
-void setTextColor(FILE *stream, TextColor color)
-{
-    int outfd = fileno(stream);
-    HANDLE out = (HANDLE)_get_osfhandle(outfd);
-    DWORD outType = GetFileType(out);
-    DWORD mode;
-    if (outType == FILE_TYPE_CHAR && GetConsoleMode(out, &mode))
-    {
-        // we're directly outputting to a win32 console if the file type
-        // is FILE_TYPE_CHAR and GetConsoleMode() returns success
-
-        SetConsoleTextAttribute(out, color);
-        // the enum constants are defined to the same values
-        // SetConsoleTextAttribute() uses, so just pass on.
-    }
-}
-
-#else
-
-static const char *ansiColorSequences[] =
-{
-    "\x1B[0;30m",
-    "\x1B[0;34m",
-    "\x1B[0;32m",
-    "\x1B[0;36m",
-    "\x1B[0;31m",
-    "\x1B[0;35m",
-    "\x1B[0;33m",
-    "\x1B[0;37m",
-    "\x1B[1;30m",
-    "\x1B[1;34m",
-    "\x1B[1;32m",
-    "\x1B[1;36m",
-    "\x1B[1;31m",
-    "\x1B[1;35m",
-    "\x1B[1;33m",
-    "\x1B[1;37m"
-};
-
-static const char *ansiColorTerms[] =
-{
-    "xterm",
-    "rxvt",
-    "vt100",
-    "linux",
-    "screen",
-    0
-    // there are probably missing a few others
-};
-
-// get current terminal and check whether it's in our list of terminals
-// supporting ANSI colors:
-static int isAnsiColorTerm(void)
-{
-    char *term = getenv("TERM");
-    for (const char **ansiTerm = &ansiColorTerms[0]; *ansiTerm; ++ansiTerm)
-    {
-        int match = 1;
-        const char *t = term;
-        const char *a = *ansiTerm;
-        while (*a && *t)
-        {
-            if (*a++ != *t++)
-            {
-                match = 0;
-                break;
-            }
-        }
-        if (match) return 1;
-    }
-    return 0;
-}
-
-void setTextColor(FILE *stream, TextColor color)
-{
-    int outfd = fileno(stream);
-    if (isatty(outfd) && isAnsiColorTerm())
-    {
-        // we're directly outputting to a terminal supporting ANSI colors,
-        // so send the appropriate sequence:
-        fputs(ansiColorSequences[color], stream);
-    }
-}
-
-#endif
-*/
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
 #include <windows.h>    // for win32 API functions
@@ -504,12 +205,12 @@ while (1) {
         }
         renderMenu(4, 55, 4);
     }
-        else if (row == 20 && click == 13) {
+        else if (row == 12 && click == 13) {
             system("cls");
             setTextColor(stdout, TC_MAGENTA);
             char modifyEmployeeFlag = 'y';
             while (modifyEmployeeFlag == 'y') {
-                char id[100];  // Assuming ID is a string of characters
+                char id[100];
                 int found = 0;
                 int employeeNumber;
                 if (numOfEmployees == 0) {
@@ -520,8 +221,9 @@ while (1) {
                     scanf("%c", &choice);
                     if (choice == '1') {
                         modifyEmployeeFlag = 'n';
-                        renderMenu(4, 55, 20);
-                    } else {
+                        renderMenu(4, 55, 12);
+                        break;
+                    } else if (choice == '2'){
                         exit(0);
                     }
                 }
@@ -584,7 +286,7 @@ while (1) {
             renderMenu(4, 55, 20);
         }
 
-    else if (row == 12 && click == 13)
+    else if (row == 8 && click == 13)
     {
         char displayEmployeesFlag = 'n';
         system("cls");
@@ -603,12 +305,68 @@ while (1) {
         printf("Want to go back to the main menu?");
         getchar();
         scanf("%c", &displayEmployeesFlag);
-        if (displayEmployeesFlag == 'y') renderMenu(4, 55, 12);
+        if (displayEmployeesFlag == 'y') renderMenu(4, 55, 8);
 
 
 
     }
-    else if ( row == 28 && click == 13)
+   /* else if ( row == 16 && click == 13)
+    {
+
+        User should enter only delete by id, id should exist in employees array, id should be int,
+        and then, should be deleted, by shifting the array, and then user is given the option to choose to return to the main menu or delete another employee
+
+
+
+    }*/
+    else if (row == 16 && click == 13) {
+        system("cls");
+        setTextColor(stdout, TC_MAGENTA);
+        char deleteEmployeeFlag = 'y';
+
+        while (deleteEmployeeFlag == 'y') {
+            char id[100];
+            int found = 0;
+            int employeeNumber;
+
+            printf("Enter ID of the employee to delete: ");
+            scanf(" %99[^\n]", id);
+
+            // Find the employee with the matching ID
+            for (int j = 0; j < numOfEmployees; j++) {
+                if (strcmp(employees[j].ID, id) == 0) {
+                    found = 1;
+                    employeeNumber = j;
+                    printf("Employee with ID %s found. Proceeding to delete...\n", id);
+                    break;
+                }
+            }
+
+            // If the employee is found, delete them
+            if (found) {
+                // Shift the employees array to remove the employee
+                for (int i = employeeNumber; i < numOfEmployees - 1; i++) {
+                    employees[i] = employees[i + 1];  // Shift elements left
+                }
+
+                // Clear the last employee slot
+                memset(&employees[numOfEmployees - 1], 0, sizeof(Employee));
+                numOfEmployees--;  // Decrease the number of employees
+                printf("Employee with ID %s has been deleted.\n", id);
+            } else {
+                printf("Employee with ID %s not found.\n", id);
+            }
+
+            // Ask if the user wants to delete another employee
+            printf("\nDo you want to delete another employee? [y/n]: ");
+            getchar();  // Clear the input buffer
+            scanf("%c", &deleteEmployeeFlag);
+        }
+
+        renderMenu(4, 55, 16);  // Go back to the menu after deletion
+    }
+
+    else if ( row == 20 && click == 13)
     {
         system("cls");
         setTextColor(stdout, TC_LIGHTGREEN);
@@ -634,7 +392,7 @@ void renderMenu(int row, int col, int currentRow)
     gotoxy(35, 0);
     puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
 
-    const char *options[] = {"New", "Display", "Modify", "Exit"};
+    const char *options[] = {"New Employee", "Display Employees", "Modify Employee","Delete Employee", "Exit Program"};
     int numOptions = sizeof(options) / sizeof(options[0]);
 
     for (int i = 0; i < numOptions; i++)
@@ -651,7 +409,7 @@ void renderMenu(int row, int col, int currentRow)
         }
 
         printf("%s", options[i]);
-        row += 8;
+        row += 4;
     }
 
     setTextColor(stdout, TC_WHITE);
@@ -661,60 +419,91 @@ int moveArrows(char click, int row, int col)
 {
             if (click == 72) // up
             {
-                if(row == 4) row =28;
-                else row -=8;
+                if(row == 4) row =20;
+                else row -=4;
 
             }
             else if ( click == 80) // down
             {
-                if(row == 28) row =4;
-                else row += 8;
+                if(row == 20) row =4;
+                else row += 4;
             }
             setTextColor(stdout, TC_WHITE);
             if (row == 4){
+                /*
+                new ==> row 4
+                display ==> row 8
+                modify ==> row 12
+                delete ==> row 16
+                exit ==> row 20
+                */
 
 
                 gotoxy(35, 0);
                 puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
+                gotoxy(col,8);
+                puts("Display Employees");
                 gotoxy(col,12);
-                puts("Display");
-                gotoxy(col,20);
-                puts("Modify");
-                gotoxy(col, 28);
-                puts("Exit");
+                puts("Modify Employee");
+                gotoxy(col, 16);
+                puts("Delete Employee");
+                gotoxy(col, 20);
+                puts("Exit Program");
                 gotoxy(col,row);
                 setTextColor(stdout, TC_BLUE);
-                puts("New");
+                puts("New Employee");
             }
-            else if ( row == 12){
+            else if ( row == 8){
 
 
                 gotoxy(35, 0);
                 puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
                 gotoxy(col,4 );
-                puts("New");
-                gotoxy(col,20);
-                puts("Modify");
-                gotoxy(col, 28);
-                puts("Exit");
+                puts("New Employee");
+                gotoxy(col,12);
+                puts("Modify Employee");
+                gotoxy(col,16);
+                puts("Delete Employee");
+                gotoxy(col, 20);
+                puts("Exit Program");
                 gotoxy(col,row);
                 setTextColor(stdout, TC_BLUE);
-                puts("Display");
+                puts("Display Employees");
             }
-            else if (row == 20){
+            else if (row == 12){
 
 
                     gotoxy(35, 0);
                     puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
                     gotoxy(col, 4);
-                    puts("New");
-                    gotoxy(col, 12);
-                    puts("Display");
-                    gotoxy(col, 28);
-                    puts("Exit");
+                    puts("New Employee");
+                    gotoxy(col, 8);
+                    puts("Display Employees");
+                    gotoxy(col, 16);
+                    puts("Delete Employee");
+                    gotoxy(col, 20);
+                    puts("Exit Program");
                     gotoxy(col,row);
                     setTextColor(stdout, TC_BLUE);
-                    puts("Modify");
+                    puts("Modify Employee");
+
+                }
+            else if (row == 16){
+
+
+                    gotoxy(35, 0);
+                    puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
+                    gotoxy(col, 4);
+                    puts("New Employee");
+                    gotoxy(col, 8);
+                    puts("Display Employees");
+                    gotoxy(col, 12);
+                    puts("Modify Employee");
+                    gotoxy(col, 20);
+                    puts("Exit Program");
+                    gotoxy(col,row);
+                    setTextColor(stdout, TC_BLUE);
+                    puts("Delete Employee");
 
                 }
             else {
@@ -723,14 +512,16 @@ int moveArrows(char click, int row, int col)
                     gotoxy(35, 0);
                     puts("WELCOME TO THE EMPLOYEE DATA MANAGEMENT SYSTEM!");
                     gotoxy(col, 4);
-                    puts("New");
+                    puts("New Employee");
+                    gotoxy(col, 8);
+                    puts("Display Employees");
                     gotoxy(col, 12);
-                    puts("Display");
-                    gotoxy(col, 20);
-                    puts("Modify");
+                    puts("Modify Employee");
+                    gotoxy(col, 16);
+                    puts("Delete Employee");
                     gotoxy(col,row);
                     setTextColor(stdout, TC_BLUE);
-                    puts("Exit");
+                    puts("Exit Program");
 
                 }
                 return row;
@@ -792,7 +583,7 @@ static const char *ansiColorTerms[] =
     "linux",
     "screen",
     0
-    // there are probably missing a few others
+
 };
 
 // get current terminal and check whether it's in our list of terminals
